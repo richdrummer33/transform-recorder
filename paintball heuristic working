@@ -1,0 +1,81 @@
+public override float[] Heuristic()
+    {
+        Vector3 dirToGo;
+        Vector3 rotateDir;
+        if (Input.GetKey(KeyCode.D))
+        {
+            dirToGo = transform.right * 1f;
+            m_AgentRb.AddForce(dirToGo * m_Academy.agentRunSpeed, ForceMode.VelocityChange);
+            //return new float[] { 3 };
+        }
+        else if (Mathf.Abs(Input.GetAxis("Axis 1")) > 0.1f)
+        {
+            dirToGo = Vector3.right * 1f;
+            m_AgentRb.AddForce(dirToGo * m_Academy.agentRunSpeed * Input.GetAxis("Axis 1"), ForceMode.VelocityChange);
+        }
+
+        if (Input.GetKey(KeyCode.W))
+        {
+            dirToGo = transform.forward * 1f;
+            m_AgentRb.AddForce(dirToGo * m_Academy.agentRunSpeed, ForceMode.VelocityChange);
+            //return new float[] { 1 };
+        }
+        else if (Mathf.Abs(Input.GetAxis("Axis 2")) > 0.1f)
+        {
+            dirToGo = Vector3.forward; //transform.forward * 1f;
+            m_AgentRb.AddForce(dirToGo * m_Academy.agentRunSpeed * -Input.GetAxis("Axis 2"), ForceMode.VelocityChange);
+            //return new float[] { 1 };
+        }
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            dirToGo = transform.right * -1f;
+            m_AgentRb.AddForce(dirToGo * m_Academy.agentRunSpeed, ForceMode.VelocityChange);
+            //return new float[] { 4 };
+        }
+        if (Input.GetKey(KeyCode.S))
+        {
+            dirToGo = transform.forward * -1f;
+            m_AgentRb.AddForce(dirToGo * m_Academy.agentRunSpeed, ForceMode.VelocityChange);
+            //return new float[] { 2 };
+        }
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            rotateDir = transform.up * 1f;
+            transform.Rotate(rotateDir, Time.fixedDeltaTime * 300f);
+            //return new float[] { 2 };
+        }
+        else if (Mathf.Abs(Input.GetAxis("Axis 4")) > 0.1f)
+        {
+            rotateDir =  transform.up * 1f; // Vector3.Cross((transform.position - Camera.main.transform.position).normalized, transform.forward.normalized).normalized.y *
+            transform.Rotate(rotateDir, Time.fixedDeltaTime * 300f * Input.GetAxis("Axis 4"));
+            //return new float[] { 2 };
+        }
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            rotateDir = transform.up * -1f;
+            transform.Rotate(rotateDir, Time.fixedDeltaTime * 300f);
+            //return new float[] { 2 };
+        }
+        if (Input.GetKey(KeyCode.UpArrow) || Input.GetAxis("Axis 3") > 0.2f)
+        {
+            
+            if (actionStep > 60 / agentParameters.numberOfActionsBetweenDecisions)
+            {
+                if (numShots > 0 && !reloading)
+                {
+                    Fire();
+                    actionStep = 0;
+                }
+            }
+        }
+        if (Input.GetKey(KeyCode.Space) || Input.GetButton("Fire1"))
+        {
+            if (!reloading)
+                StartCoroutine(Reload());
+        }
+
+        actionStep++;
+
+        return new float[] { 0, 0, 0, 0, 0 };
+    }
